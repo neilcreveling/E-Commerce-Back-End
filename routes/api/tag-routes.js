@@ -7,24 +7,36 @@ const { Tag, Product, ProductTag } = require('../../models');
 // be sure to include its associated Product data
 router.get('/', async (req, res) => {
   try {
-    const tags = await Tag.findByPk(req.params.id);
-    if (!tags) {
-      res.status(404).json({ message: 'Tag not found' });
+    const findAllTags = await Tag.findAll();
+    res.status(200).json(findAllTags);
+  } catch (err) {
+  res.status(500).json(err);
+  }
+});
+
+  // find a single tag by its `id`
+  // be sure to include its associated Product data
+router.get('/:id', async (req, res) => {
+  try {
+    const findIdTags = await Tag.findByPk(req.params.id);
+    if (!findIdTags) {
+      res.status(404).json({ message: 'No user with this id '});
       return;
     }
-    res.status(200).json(tags);
+    res.status(200).json(findIdTags);
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
-router.get('/:id', (req, res) => {
-  // find a single tag by its `id`
-  // be sure to include its associated Product data
-});
-
-router.post('/', (req, res) => {
   // create a new tag
+router.post('/', async (req, res) => {
+  try {
+    const createTag = await Tag.create(req.body);
+    res.status(200).json(createTag);
+  } catch (err) {
+    res.status(400).json(err);
+  }
 });
 
   // update a tag's name by its `id` value
