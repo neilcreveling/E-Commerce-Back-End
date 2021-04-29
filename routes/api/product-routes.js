@@ -69,6 +69,46 @@ router.post('/', async (req, res) => {
 // update product
 router.put('/:id', async (req, res) => {
   // update product data
+  try {
+    const productData = await Product.update(req.body, {
+      where: {
+        id: req.params.id
+      },
+    });
+    const productsTags = await ProductTag.findAll({
+      where: {
+        product_id: req.params.id
+      },
+    });
+    const ProductTagIds = await productTags.map(({ tag_id }) => tag_id);
+    const newProductTags = req.body.tagIds
+      .filter((tag_id) => !productTagIds.includes(tag_id))
+      .map((tag_id) => {
+        return {
+          product_id: req.params.id,
+          tag_id,
+        };
+      });
+    const productTagsRemove = productTags
+      .filter(({ tag_id }) => !req.body.tagIds.includes(tag_id))
+      .map(({ id }) => id);
+    // run actions
+    const updatedProductTags = await Promise.all([
+      ProductTag.destroy({ where: {id: productTagsRemove }}),
+      ProductTag.bulkCreate(newProductTags),
+    ]);
+    res.json(updatedProductTags);
+  } catch (err) {
+    console.log(err);
+    res.status(400).json(err);
+  }
+});
+
+
+
+
+
+
   Product.update(req.body, {
     where: {
       id: req.params.id,
