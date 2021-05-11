@@ -9,19 +9,20 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
     try {
       const findAllProducts = await Product.findAll({
         include: [
-          { model: Category, 
-          as: 'category',
+          { 
+            model: Category, 
+            as: 'category',
           },
           {
             model: Tag, 
             through: ProductTag,
-          as: 'tags', 
-        },
-      ],
+            as: 'tags', 
+          },
+        ],
       });
       res.status(200).json(findAllProducts);
     } catch (err) {
-    res.status(500).json(err);
+      res.status(500).json(err);
     }
   });
 
@@ -70,7 +71,7 @@ router.post('/', async (req, res) => {
         tag_id
       };
     });
-    let productTagIds = await ProductTag.bulkCreate(productTagIdArr);
+    let productTagIds = await ProductTag.bulkCreate(productTagArr);
     res.status(200).json(productTagIds);
     } else {
       res.status(200).json(productData);

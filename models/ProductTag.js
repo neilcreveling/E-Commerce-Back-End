@@ -24,15 +24,15 @@ ProductTag.init(
       references: {
         model: 'tag',
         key: 'id'
-      }
-    }
+      },
+    },
   },
   {
     sequelize,
     timestamps: false,
     freezeTableName: true,
     underscored: true,
-    modelName: 'product-tag',
+    modelName: 'product_tag',
   }
 );
 
